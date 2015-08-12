@@ -1,2 +1,5 @@
-write "hello world!"
-write "hello earth!"
+Write "hello world!"
+write 10
+write 20
+write 30
+<EOF>

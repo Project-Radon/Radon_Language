@@ -14,7 +14,8 @@ def lex(filecontents):
         state = 0
         string = ""
         expr = ""
-        nm = ""
+        number = ""
+        isexpr = 0
         filecontents = list(filecontents)
         for char in filecontents:
                 tok += char
@@ -25,11 +26,13 @@ def lex(filecontents):
                         tok = " "
                 elif tok == "\n" or tok == "<EOF>":
                     if expr != "" and isexpr == 1:
-                        print(expr + "Int")
+                        tokens.append("expr:" + expr)
                         expr = ""
+                        isexpr = 0
                     elif expr != "" and isexpr == 0:
-                        print(expr + "Int")
+                        tokens.append("num:" + expr)
                         expr = ""
+                        isexpr = 0
                     tok = ""
                 elif tok.lower() == "write":
                         tokens.append("write")
@@ -37,7 +40,7 @@ def lex(filecontents):
                 elif tok == "0" or tok == "1" or tok == "2" or tok == "3" or tok == "4" or tok == "5" or tok == "6" or tok == "7" or tok == "8" or tok == "9":
                     expr += tok
                     tok = ""
-                elif tok == "+":
+                elif tok == "+" or tok == "-" or tok == "*" or tok == "/" or tok == "%":
                     isexpr = 1
                     expr += tok
                     tok = ""
@@ -53,15 +56,20 @@ def lex(filecontents):
                         string += tok
                         tok = ""
 
-                print(expr)
+                print(tokens)
         return tokens
 def parse(toks):
     v = 0
     print(v)
     while(v < len(toks)):
-        if toks[v] + " " + toks[v+1][0:6] == "write string":
-            print(toks[v+1][7:])
-            v += 2
+        if toks[v] + " " + toks[v+1][0:6] == "write string" or toks[v] + " " + toks[v+1][0:3] == "write num" or toks[v] + " " + toks[v+1][0:6] == "write expr":
+            if toks[v+1][0:6] == "string":
+                print(toks[v+1][7:])
+            elif toks[v+1][0:3] == "num":
+                print(toks[v+1][4:])
+            elif toks[v+1][0:4] == "expr":
+                print(toks[v+1][5:])
+            v+=2
     
 def run():
     if len(argv) > 1:
